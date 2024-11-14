@@ -1,0 +1,1220 @@
+---
+openapi: 3.0.3
+info:
+  title: Draivn OneApi
+  description: Draivn OneApi
+  contact:
+    name: Draivn OneApi
+    url: https://draivn.com
+    email: techsupport@draivn.com
+  version: 2.1.0
+servers:
+- url: https://app.dev.draivn.com
+tags:
+- name: Customers
+  description: Provide API for customers
+- name: Policies
+  description: Provide API for policies
+- name: Drivers
+  description: Provide API for Drivers
+- name: Vehicles
+  description: Provide API for vehicles
+- name: Trips
+  description: Provide API for vehicle trips
+- name: Events
+  description: Provide API for vehicle events
+- name: Buckets
+  description: Provide API for vehicle buckets
+- name: Scores
+  description: Provide API for vehicle scores
+- name: Files
+  description: Provide API for extract daily files
+- name: Invites
+  description: Provide API for fleet operator invites
+paths:
+  /api/v2.1/buckets:
+    get:
+      tags:
+      - Buckets
+      description: Get buckets for period
+      operationId: get-buckets
+      parameters:
+      - name: dateBegin
+        in: query
+        description: Bucket date begin at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      - name: dateEnd
+        in: query
+        description: Bucket date end at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      - name: policyId
+        in: query
+        description: Policy unique identifier
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: a9de6080-e63a-48fe-90de-4c48de7e9c92
+      responses:
+        "200":
+          description: The Bucket List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoBucketDto"
+  /api/v2.1/customers:
+    get:
+      tags:
+      - Customers
+      description: Get customer list
+      operationId: get-customers
+      responses:
+        "200":
+          description: The Customer List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoCustomerDto"
+  /api/v2.1/customers/{customerId}:
+    get:
+      tags:
+      - Customers
+      description: Get customer by customer ID
+      operationId: get-customer-by-id
+      parameters:
+      - name: customerId
+        in: path
+        description: Draivn customer unique identifier
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: b349a1bd-1cab-4552-b84d-75663d5fa13c
+      responses:
+        "200":
+          description: The Customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoCustomerDto"
+  /api/v2.1/daily-files:
+    get:
+      tags:
+      - Files
+      description: Get daily file list by period
+      operationId: get-daily-files
+      parameters:
+      - name: dateBegin
+        in: query
+        description: Start date
+        required: true
+        schema:
+          $ref: "#/components/schemas/LocalDate"
+      - name: dateEnd
+        in: query
+        description: End date
+        required: true
+        schema:
+          $ref: "#/components/schemas/LocalDate"
+      - name: moduleType
+        in: query
+        description: "List of module types. Default [All modules]. Possible values:\
+          \ SYNCHRONIZE, HARMONIZE, ANALYZE, CALIBRATE"
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ModuleType"
+      - name: policyId
+        in: query
+        description: Draivn policy unique identifier
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: b349a1bd-1cab-4552-b84d-75663d5fa13c
+      responses:
+        "200":
+          description: The daily file list by period
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoDailyFileDto"
+  /api/v2.1/drivers:
+    get:
+      tags:
+      - Drivers
+      description: Get drivers for period
+      operationId: get-drivers
+      parameters:
+      - name: policyAt
+        in: query
+        description: Policy date at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      - name: policyId
+        in: query
+        description: Policy unique identifier
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: a9de6080-e63a-48fe-90de-4c48de7e9c92
+      responses:
+        "200":
+          description: The Driver List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoDriverDto"
+  /api/v2.1/events:
+    get:
+      tags:
+      - Events
+      description: Get events for period
+      operationId: get-events
+      parameters:
+      - name: dateBegin
+        in: query
+        description: Event date begin at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      - name: dateEnd
+        in: query
+        description: Event date end at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      - name: policyId
+        in: query
+        description: Policy unique identifier
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: a9de6080-e63a-48fe-90de-4c48de7e9c92
+      responses:
+        "200":
+          description: The event List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoEventDto"
+  /api/v2.1/invites:
+    post:
+      tags:
+      - Invites
+      description: Create invite of the fleet operator
+      operationId: create-fleet-operator-invite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Invite"
+      responses:
+        "200":
+          description: Draivn internal id of the invite
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoUUID"
+  /api/v2.1/policies:
+    get:
+      tags:
+      - Policies
+      description: Get policy list
+      operationId: get-policies
+      parameters:
+      - name: customerId
+        in: query
+        description: Draivn customer unique identifier
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: b349a1bd-1cab-4552-b84d-75663d5fa13c
+      responses:
+        "200":
+          description: The Policy List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoPolicyDto"
+  /api/v2.1/policies/{policyId}:
+    get:
+      tags:
+      - Policies
+      description: Get policy by policy ID
+      operationId: get-policy-by-id
+      parameters:
+      - name: policyId
+        in: path
+        description: Draivn policy unique identifier
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: b349a1bd-1cab-4552-b84d-75663d5fa13c
+      responses:
+        "200":
+          description: The Policy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoPolicyDto"
+  /api/v2.1/policies/{policyId}/buckets:
+    get:
+      tags:
+      - Policies
+      description: Get policy buckets
+      operationId: get-policy-buckets
+      parameters:
+      - name: policyId
+        in: path
+        description: Internal policy unique identifier
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: b349a1bd-1cab-4552-b84d-75663d5fa13c
+      - name: dateBegin
+        in: query
+        description: Bucket date begin at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      - name: dateEnd
+        in: query
+        description: Bucket date end at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      responses:
+        "200":
+          description: The Policy Buckets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoBucketDto"
+  /api/v2.1/policies/{policyId}/events:
+    get:
+      tags:
+      - Policies
+      description: Get policy events
+      operationId: get-policy-events
+      parameters:
+      - name: policyId
+        in: path
+        description: Internal policy unique identifier
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: b349a1bd-1cab-4552-b84d-75663d5fa13c
+      - name: dateBegin
+        in: query
+        description: Event date begin at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      - name: dateEnd
+        in: query
+        description: Event date end at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      responses:
+        "200":
+          description: The Policy Events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoEventDto"
+  /api/v2.1/policies/{policyId}/trips:
+    get:
+      tags:
+      - Policies
+      description: Get policy trips
+      operationId: get-policy-trips
+      parameters:
+      - name: policyId
+        in: path
+        description: Internal policy unique identifier
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: b349a1bd-1cab-4552-b84d-75663d5fa13c
+      - name: dateBegin
+        in: query
+        description: Trip date begin at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      - name: dateEnd
+        in: query
+        description: Trip date end at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      responses:
+        "200":
+          description: The Policy Trips
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoTripDto"
+  /api/v2.1/trips:
+    get:
+      tags:
+      - Trips
+      description: Get trips for period
+      operationId: get-trips
+      parameters:
+      - name: dateBegin
+        in: query
+        description: Trip date begin at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      - name: dateEnd
+        in: query
+        description: Trip date end at. A date-time with an offset from UTC/Greenwich
+          in the ISO-8601 calendar system.
+        required: true
+        schema:
+          $ref: "#/components/schemas/OffsetDateTime"
+        example: 2023-12-03T10:15:30+01:00
+      - name: policyId
+        in: query
+        description: Vehicle unique identifier
+        required: true
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: a9de6080-e63a-48fe-90de-4c48de7e9c92
+      responses:
+        "200":
+          description: The Trip List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoTripDto"
+  /api/v2.1/vehicles:
+    get:
+      tags:
+      - Vehicles
+      description: Get vehicles for period
+      operationId: get-vehicles
+      parameters:
+      - name: dateAt
+        in: query
+        description: Policy date at.
+        schema:
+          $ref: "#/components/schemas/LocalDate"
+        example: 2023-12-03
+      - name: policyId
+        in: query
+        description: Policy unique identifier
+        schema:
+          $ref: "#/components/schemas/UUID"
+        example: a9de6080-e63a-48fe-90de-4c48de7e9c92
+      responses:
+        "200":
+          description: The Vehicle List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponseDtoVehicleDto"
+components:
+  schemas:
+    Bucket:
+      description: Bucket
+      type: object
+      properties:
+        id:
+          title: Bucket Id
+          description: Draivn bucket unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: 1f555aaa-9cea-4294-bbb3-ed7ccca91f6b
+        value:
+          title: Bucket Value
+          description: Draivn Value
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Bucket Value"
+    Bucket Value:
+      description: Bucket Value
+      type: object
+      properties:
+        time:
+          format: int64
+          title: Bucket duration
+          description: Bucket duration in seconds
+          type: integer
+          example: 10
+        distance:
+          format: double
+          title: Bucket distance
+          description: Bucket distance in meters
+          type: number
+          example: 10
+    Company Contact:
+      description: Contact with a company name
+      type: object
+      properties:
+        companyName:
+          title: Company name
+          description: Company name of the recipient
+          type: string
+          example: Company A
+        firstName:
+          title: First Name
+          description: Contact first name
+          type: string
+          example: John
+        lastName:
+          title: Last Name
+          description: Contact last name
+          type: string
+          example: Smith
+        email:
+          title: Email
+          description: Contact email
+          type: string
+          example: company@mail.com
+    Customer:
+      description: Customer Dto
+      type: object
+      properties:
+        id:
+          title: Customer Id
+          description: Draivn customer unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: f5843dbb-4efa-406a-9e43-39832e368630
+        name:
+          title: Customer name
+          description: Customer name
+          type: string
+          example: John Doe corporation
+        description:
+          title: Customer info
+          description: Customer info
+          type: string
+          example: John Doe corporation
+        fein:
+          title: Customer fein
+          description: Customer fein
+          type: string
+          example: "13243546"
+        usdot:
+          title: Customer usdot
+          description: Customer usdot
+          type: string
+          example: "13243546"
+        createAt:
+          title: Customer zoned timestamp create
+          description: Customer zoned timestamp create. A date-time with an offset
+            from UTC/Greenwich in the ISO-8601 calendar system.
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/OffsetDateTime"
+          example: 2023-12-03T10:15:30+01:00
+    Daily File:
+      description: Daily File DTO
+      type: object
+      properties:
+        id:
+          title: File Id
+          description: Internal vehicle unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: f5843dbb-4efa-406a-9e43-39832e368630
+        policyId:
+          title: Policy Id
+          description: Draivn policy unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: f5843dbb-4efa-406a-9e43-39832e368630
+        dateDay:
+          title: Date of file
+          description: The file date
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/LocalDate"
+          example: 2024-01-01
+        moduleType:
+          title: Module Type
+          description: File module type
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/ModuleType"
+          example: HARMONIZE
+        dataType:
+          title: Data Type
+          description: File data type
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/TransferDataType"
+          example: HARMONIZE_TRIP
+        dataVersion:
+          title: Data Version
+          description: File data version
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/TransferDataVersion"
+          example: V2
+        entityCount:
+          format: int64
+          title: Entity Count
+          description: Entity count in the file
+          type: integer
+          example: 36
+        fileName:
+          title: File name
+          description: Filename
+          type: string
+          example: synchronize_vehicle.fleet.parquet
+        fileSize:
+          format: int64
+          title: File size
+          description: File size in bytes
+          type: integer
+          example: 1024
+        fileDate:
+          title: File date
+          description: File creation timestamp
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/OffsetDateTime"
+          example: 2023-12-03T10:15:30+01:00
+        fileUrl:
+          title: File path
+          description: File URI
+          type: string
+          example: s3a://draivn-data/broker/fleet/2024-08-08/v2/synchronize_vehicle.fleet.parquet
+    DataResponseDtoBucketDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Bucket"
+        meta:
+          $ref: "#/components/schemas/Meta"
+    DataResponseDtoCustomerDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Customer"
+        meta:
+          $ref: "#/components/schemas/Meta"
+    DataResponseDtoDailyFileDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Daily File"
+        meta:
+          $ref: "#/components/schemas/Meta"
+    DataResponseDtoDriverDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Driver"
+        meta:
+          $ref: "#/components/schemas/Meta"
+    DataResponseDtoEventDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+        meta:
+          $ref: "#/components/schemas/Meta"
+    DataResponseDtoPolicyDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Policy"
+        meta:
+          $ref: "#/components/schemas/Meta"
+    DataResponseDtoTripDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Trip"
+        meta:
+          $ref: "#/components/schemas/Meta"
+    DataResponseDtoUUID:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/UUID"
+        meta:
+          $ref: "#/components/schemas/Meta"
+    DataResponseDtoVehicleDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Vehicle"
+        meta:
+          $ref: "#/components/schemas/Meta"
+    Driver:
+      description: Synchronize Driver DTO
+      type: object
+      properties:
+        id:
+          title: Driver Id
+          description: Driver unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: f5843dbb-4efa-406a-9e43-39832e368630
+        licenseNumber:
+          title: License Number
+          description: Driver License Number
+          type: string
+          example: EK-1398984
+        licenseState:
+          title: License State
+          description: Driver License State
+          type: string
+        firstName:
+          title: First Name
+          description: Driver First Name
+          type: string
+          example: John
+        Smith:
+          title: Last Name
+          description: Driver Last Name
+          type: string
+          example: "2024"
+        dateHire:
+          title: Date Hire
+          description: Date of driver hire
+          type: string
+          example: 02/01/2024
+    Event:
+      description: Event
+      type: object
+      properties:
+        id:
+          title: Event Id
+          description: Draivn event unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: 1f555aaa-9cea-4294-bbb3-ed7ccca91f6b
+        name:
+          title: Event Name
+          description: Draivn event name
+          type: string
+          example: SPEEDING
+        start:
+          title: Start position info
+          description: Start event position info
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Event Position"
+        end:
+          title: End position info
+          description: End event position info
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Event Position"
+    Event Position:
+      description: Event position
+      type: object
+      properties:
+        time:
+          title: Event position zoned timestamp
+          description: Position zoned timestamp. A date-time with an offset from UTC/Greenwich
+            in the ISO-8601 calendar system.
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/OffsetDateTime"
+          example: 2023-12-03T10:15:30+01:00
+        latitude:
+          title: Position latitude
+          description: Event position latitude
+          type: number
+          example: 38.790772
+        longitude:
+          title: Position longitude
+          description: Event position longitude
+          type: number
+          example: -77.52204
+    Invite:
+      description: Invite creation request
+      required:
+      - host
+      - invitee
+      - policy
+      type: object
+      properties:
+        host:
+          title: Invite Host
+          description: The information about the host of the invite
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Invite Host2"
+        invitee:
+          title: Invitee Fleet Operator
+          description: The information about the fleet operator to invite
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Invite Host1"
+        policy:
+          title: Policy Information
+          description: The information about the policy
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Invite Host3"
+    Invite Host:
+      description: Invite Host Dto
+      required:
+      - firstName
+      - lastName
+      - email
+      type: object
+      properties:
+        firstName:
+          title: First Name
+          description: Contact first name
+          pattern: \S
+          type: string
+          example: John
+        lastName:
+          title: Last Name
+          description: Contact last name
+          pattern: \S
+          type: string
+          example: Smith
+        email:
+          title: Email
+          description: Contact email
+          pattern: \S
+          type: string
+          example: fleet@mail.com
+        phone:
+          title: Phone number
+          description: Contact phone number
+          type: string
+          example: "911"
+    Invite Host1:
+      description: Invite Host Dto
+      required:
+      - companyName
+      - fein
+      - contact
+      type: object
+      properties:
+        companyName:
+          title: Company name
+          description: Company name of the fleet operator
+          pattern: \S
+          type: string
+          example: Company C
+        fein:
+          title: FEIN or Tax Id
+          description: FEIN or Tax Id of the fleet operator
+          maxLength: 10
+          pattern: "\\d{1,10}"
+          type: string
+          example: "1234567890"
+        usdot:
+          title: US DOT
+          description: US DOT number of the fleet operator
+          maxLength: 8
+          pattern: "\\d{1,8}"
+          type: string
+          example: "7654321"
+        contact:
+          title: Contact
+          description: Contact of the fleet operator
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Invite Host"
+        expectedNumberOfVehicles:
+          format: int32
+          title: Expected number of Vehicles
+          description: Expected number of Vehicles/Power Units
+          type: integer
+          example: 13
+    Invite Host2:
+      description: Invite Host Dto
+      required:
+      - accountId
+      - companyName
+      - contact
+      type: object
+      properties:
+        accountId:
+          title: Host Account Id
+          description: Draivn host account id unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: f5843dbb-4efa-406a-9e43-39832e368630
+        companyName:
+          title: Company name
+          description: Company name of the invite host
+          pattern: \S
+          type: string
+          example: Company B
+        contact:
+          title: Host company contact
+          description: Contact information of the invite host
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Invite Host"
+    Invite Host3:
+      description: Invite Host Dto
+      required:
+      - policyNumber
+      - policyStatus
+      - dateEnd
+      type: object
+      properties:
+        policyNumber:
+          title: Policy number
+          description: Policy or Quote number
+          pattern: \S
+          type: string
+          example: PN-1
+        policyStatus:
+          title: Policy status
+          description: "Possible values: QUOTING, SERVICE"
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/PolicyType"
+          example: QUOTING
+        dateBegin:
+          title: Date begin
+          description: The insurance policy start date
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/LocalDate"
+          example: 2024-01-01
+        dateEnd:
+          title: Date end
+          description: The insurance policy end date
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/LocalDate"
+          example: 2024-01-30
+        insurer:
+          title: Insurer
+          description: Current insurer of the policy
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Company Contact"
+        underwriter:
+          title: Underwriter
+          description: Underwriter of the policy
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Company Contact"
+        broker:
+          title: Broker
+          description: Current broker of the policy
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Company Contact"
+    LocalDate:
+      format: date
+      type: string
+      example: 2022-03-10
+    Meta:
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties: {}
+    ModuleType:
+      enum:
+      - SYNCHRONIZE
+      - HARMONIZE
+      - ANALYZE
+      - CALIBRATE
+      - COACH
+      type: string
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
+    Policy:
+      description: Policy Dto
+      type: object
+      properties:
+        id:
+          title: Policy Id
+          description: Draivn policy unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: f5843dbb-4efa-406a-9e43-39832e368630
+        customerId:
+          title: Customer Id
+          description: Draivn customer unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: f5843dbb-4efa-406a-9e43-39832e368630
+        policyNumber:
+          title: Policy number
+          description: Policy number
+          type: string
+          example: PL-51733602
+        policyType:
+          title: Policy type
+          description: "Possible values: QUOTING, SERVICE"
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/PolicyType"
+          example: QUOTING
+        dateBegin:
+          title: Date begin
+          description: The insurance policy start date
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/LocalDate"
+          example: 2024-01-01
+        dateEnd:
+          title: Date end
+          description: The insurance policy end date
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/LocalDate"
+          example: 2024-01-30
+        dateConsent:
+          title: Date consent
+          description: "The date from which the fleet operator allowed the use of\
+            \ the policy for the insurer, applicable to all data"
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/LocalDate"
+          example: 2024-01-30
+        insurerName:
+          title: Insurer name
+          description: Insurer of record for the policy
+          type: string
+          example: Insurer
+        brokerName:
+          title: Broker name
+          description: Broker of record for the policy
+          type: string
+          example: Broker
+        description:
+          title: Description
+          description: Policy description
+          type: string
+          example: Policy additional info
+        createAt:
+          title: Policy zoned timestamp create
+          description: Policy zoned timestamp create. A date-time with an offset from
+            UTC/Greenwich in the ISO-8601 calendar system.
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/OffsetDateTime"
+          example: 2023-12-03T10:15:30+01:00
+    PolicyType:
+      enum:
+      - QUOTING
+      - SERVICE
+      type: string
+    TransferDataType:
+      enum:
+      - SYNCHRONIZE_VEHICLE
+      - SYNCHRONIZE_DRIVER
+      - HARMONIZE_TRIP
+      - HARMONIZE_TRIP_EVENT
+      - ANALYZE_TRIP
+      - ANALYZE_TRIP_EVENT
+      - ANALYZE_TRIP_BUCKET
+      - ANALYZE_TRIP_EVENT_BUCKET
+      - ANALYZE_TRIP_EVENT_CONTEXT
+      - CALIBRATE_SCORE
+      - COACH_BREADCRUMBS
+      - COACH_VEHICLE
+      - COACH_DRIVER
+      - COACH_TRIP
+      - COACH_EVENT
+      type: string
+    TransferDataVersion:
+      enum:
+      - V1
+      - V2
+      type: string
+    Trip:
+      description: Trip
+      type: object
+      properties:
+        id:
+          title: Trip Id
+          description: Draivn trip unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: f5843dbb-4efa-406a-9e43-39832e368630
+        vehicleId:
+          title: Vehicle Id
+          description: Internal vehicle unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: f5843dbb-4efa-406a-9e43-39832e368630
+        start:
+          title: Start position info
+          description: Start trip position info
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Trip Position"
+        end:
+          title: End position info
+          description: End trip position info
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Trip Position"
+        distance:
+          title: Distance info
+          description: Trip distance info
+          type: object
+          allOf:
+          - $ref: "#/components/schemas/Trip Distance"
+    Trip Distance:
+      description: Trip distance in meters
+      type: object
+      properties:
+        gps:
+          format: int32
+          title: Gps
+          description: Trip distance by GPS in meters
+          type: integer
+          example: 65377
+        odo:
+          format: int64
+          title: Odo
+          description: Trip distance by odometer in meters
+          type: integer
+          example: 65769
+    Trip Position:
+      description: Trip Position
+      type: object
+      properties:
+        time:
+          title: Trip position zoned timestamp
+          description: Position zoned timestamp. A date-time with an offset from UTC/Greenwich
+            in the ISO-8601 calendar system.
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/OffsetDateTime"
+          example: 2023-12-03T10:15:30+01:00
+        latitude:
+          title: Position latitude
+          description: Trip position latitude
+          type: number
+          example: 38.790772
+        longitude:
+          title: Position longitude
+          description: Trip position longitude
+          type: number
+          example: -77.52204
+        address:
+          title: Position address
+          description: Trip position address
+          type: string
+          example: "Richmond, IN"
+        odo:
+          format: int64
+          title: Position odometer value
+          description: Trip position odometer value in meters
+          type: integer
+          example: 116961098
+    UUID:
+      format: uuid
+      pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+      type: string
+    Vehicle:
+      description: Synchronize Vehicle DTO
+      type: object
+      properties:
+        id:
+          title: Vehicle Id
+          description: Internal vehicle unique identifier
+          type: string
+          allOf:
+          - $ref: "#/components/schemas/UUID"
+          example: f5843dbb-4efa-406a-9e43-39832e368630
+        vin:
+          title: VIN
+          description: A series of Arabic numbers and Roman letters that is assigned
+            to a motor vehicle for identification purposes.
+          type: string
+          example: 1GNEK13ZX3R298984
+        licensePlate:
+          title: License plate
+          description: The vehicle registration number
+          type: string
+          example: "1577"
+        make:
+          title: Make
+          description: A name that a manufacturer applies to a group of vehicles or
+            engines
+          type: string
+          example: Ford
+        model:
+          title: Model
+          description: "A name that a manufacturer applies to a family of vehicles\
+            \ of the same type, make, line, series and body type"
+          type: string
+          example: X7
+        year:
+          title: Year
+          description: "The year used to designate a discrete vehicle model, irrespective\
+            \ of the calendar year in which the vehicle was actually produced, provided\
+            \ that the production period does not exceed 24 months."
+          type: string
+          example: "2024"
+  securitySchemes:
+    SecurityScheme:
+      type: http
+      description: Authentication
+      scheme: bearer
+      bearerFormat: JWT
